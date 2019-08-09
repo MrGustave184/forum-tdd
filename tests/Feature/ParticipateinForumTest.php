@@ -65,4 +65,15 @@ class ParticipateinForumTest extends TestCase
 			$this->post($this->thread->path().'/replies', $reply->toArray())
 				->assertRedirect('/login');
 		}
+
+		/** @test */
+		public function a_reply_requires_a_body()
+		{
+			$this->actingAs(factory('App\User')->create());
+			
+			$reply = factory('App\Reply')->make(['body' => null]);
+			
+			$this->post($this->thread->path().'/replies', $reply->toArray())
+				->assertSessionHasErrors('body');
+		}
 }

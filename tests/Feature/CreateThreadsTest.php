@@ -10,7 +10,16 @@ class CreateThreadsTest extends TestCase
 {
 	use RefreshDatabase;
 
-	
+	// Authenticate the user, creates a thread and makes the post request to persist it 
+	public function publishThread($overrides = [])
+	{
+		$user = $this->actingAs(factory('App\User')->create());
+
+		$thread = factory('App\Thread')->make($overrides);
+
+		// Return the response to enable a fluid interface
+		return $this->post('/threads', $thread->toArray());
+	}
 
 	 /** @test */
 	 public function an_authenticated_user_can_create_threads()
@@ -26,13 +35,17 @@ class CreateThreadsTest extends TestCase
 			//  but a raw data array instead
 			// $thread = factory('App\Thread')->raw();	
 			// $thread = factory('App\Thread')->make();	
-			$thread = create('App\Thread');	
+			$thread = make('App\Thread');	
 			// dd($thread);
-			$this->post('/threads', $thread->toArray());
+			$response = $this->post('/threads', $thread->toArray());
+			// dd($response->headers->get('Location'));
 
 			// Then when we visit the threads page 
-			// dd($thread->path());
-			$this->get($thread->path())
+			// We cant use $thread->path for the request because we are making a thread with
+			//  the factory (make), not persisting it (create), so it doesn't have an id and it 
+			// can't fullfil the path() format we defined (/threads/channel/id).
+			// Thats why we use the response and get the path from there
+			$this->get($response->headers->get('Location'))
 
 			// We should see the new thread
 				->assertSee($thread->title)
@@ -79,4 +92,37 @@ class CreateThreadsTest extends TestCase
 			// This is another one (a better one because it asserts the redirect too)
 			->assertRedirect('/login');
 	}
+
+	/** @test */
+	public function a_thread_requires_a_title()
+	{
+		$this->publishThread(['title' => null])
+
+		// Laravel throws an errors variable to the session, we gonna check if that
+		// variable has a 'title' key when we do not provide a title to our thread
+		//  wich indicates that our test is correct
+			->assertSessionHasErrors('title');
+	}
+
+	/** @test */
+	public function a_thread_requires_a_body()
+	{
+		$this->publishThread(['body' => null])
+			->assertSessionHasErrors('body');
+	}
+
+	/** @test */
+	public function a_thread_requires_a_valid_channel()
+	{
+		factory('App\Channel', 2)->create();
+
+		// Validate channel_id has a value
+		$this->publishThread(['channel_id' => null])
+			->assertSessionHasErrors('channel_id');
+
+		// Validate channel id exists in the channels table
+		$this->publishThread(['channel_id' => 999])
+			->assertSessionHasErrors('channel_id');
+	}
 }
+	
