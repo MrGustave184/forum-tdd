@@ -23,6 +23,8 @@ class ReadThreadsTest extends TestCase
 	/** @test */
 	public function a_user_can_browse_all_threads()
 	{
+		$this->withoutExceptionHandling();
+		
 		// Get request to /threads endpoint
 		$this->get('/threads')
 			->assertSee($this->thread->title);
@@ -49,5 +51,19 @@ class ReadThreadsTest extends TestCase
 
 		// Then we should see those replies
 				->assertSee($reply->body);
+	}
+
+	/** @test */
+	public function a_user_can_filter_threads_by_channel()
+	{
+		$this->withoutExceptionHandling();
+		
+		$channel = factory('App\Channel')->create();
+		$threadInChannel = factory('App\Thread')->create(['channel_id' => $channel->id]);
+		$threadNotInChannel = factory('App\Thread')->create();
+
+		$this->get('/threads/' . $channel->slug)
+			->assertSee($threadInChannel->tittle)
+			->assertDontSee($threadNotInChannel->title);
 	}
 }

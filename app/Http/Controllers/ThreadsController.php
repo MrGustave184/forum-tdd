@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Thread;
+use App\Channel;
 use Illuminate\Http\Request;
 
 class ThreadsController extends Controller
@@ -19,9 +20,29 @@ class ThreadsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-				$threads = Thread::latest()->get();
+    public function index(Channel $channel)
+    {	
+				/**
+				* The class not found error came because route model binding was trying to get the channel
+				*	by his id, but we are using the slug instead (in the url)
+				*/
+				// // For this approach, we pass $channelSlug = null as a parameter
+				// if($channelSlug) {
+				// 	$channel = Channel::where('slug', $channelSlug)->first();
+				// 	$threads = Thread::where('channel_id', $channel->id)->latest()->get();
+				// }
+				// else {
+				// 	$threads = Thread::latest()->get();
+				// }
+
+				// // For this approach, we use route model binding and the eloquent relationship
+				// if($channel->exists)
+				// 	$threads = $channel->threads()->latest()->get();
+				// else
+				// 	$threads = Thread::latest()->get();
+				
+				$threads = $channel->exists ? $channel->threads()->latest()->get() : Thread::latest()->get();
+
         return view('threads.index', compact('threads'));
     }
 

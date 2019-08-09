@@ -25,7 +25,20 @@
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
-                </a>
+								</a>
+
+								{{-- Categories Dropdown --}}
+								<div class="dropdown navbar-brand">
+									<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Categories
+									</a>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+										@foreach(App\Channel::all() as $channel)
+											<a class="dropdown-item" href="/threads/{{$channel->slug}}">{{ $channel->name }}</a>
+										@endforeach
+									</div>
+								</div>
+								
                 <a class="navbar-brand" href="{{ url('/threads') }}">
                     All threads
 								</a>
