@@ -49,15 +49,20 @@ class ParticipateinForumTest extends TestCase
 		/** @test */
 		public function unauthenticated_users_may_not_add_replies()
 		{
-			// Disable exception handling for this test is expecting an authentication exception
-			$this->withoutExceptionHandling();
+			// // Disable exception handling for this test is expecting an authentication exception
+			// $this->withoutExceptionHandling();
 
-			// This tests is expecting an authentication exception
-			$this->expectException('Illuminate\Auth\AuthenticationException');
+			// // This tests is expecting an authentication exception
+			// $this->expectException('Illuminate\Auth\AuthenticationException');
 
-			// $reply = factory('App\Reply')->make();
-			$reply = make('App\Reply');
+			// // $reply = factory('App\Reply')->make();
+			// $reply = make('App\Reply');
 
-			$this->post($this->thread->path() .'/replies', $reply->toArray());
+			// $this->post($this->thread->path() .'/replies', $reply->toArray());
+
+			// Above code was changed to asserting the redirect instead
+			$reply = factory('App\Reply')->make();
+			$this->post($this->thread->path().'/replies', $reply->toArray())
+				->assertRedirect('/login');
 		}
 }

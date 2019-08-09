@@ -19,7 +19,9 @@ $factory->define(Thread::class, function (Faker $faker) {
 					// If random user was found, return his id, else create a new user and return his id 
 					return $randomUser ? $randomUser->id : factory('App\User')->create()->id;
 				},
-
+				'channel_id' => function () {
+					return factory('App\Channel')->create()->id;
+				},
         'title' => $faker->sentence(),
         'body' => $faker->paragraph,
     ];

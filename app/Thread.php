@@ -11,7 +11,8 @@ class Thread extends Model
 	/** Return the url path to the thread  */
 	public function path()
 	{
-		return '/threads/' . $this->id;
+		return "/threads/{$this->channel->slug}/{$this->id}";
+		// return '/threads/'.$this->channel->slug.'/'.$this->id;
 	}
 
 	/** A thread has many replies */
@@ -30,5 +31,10 @@ class Thread extends Model
 	{
 		// Eloquent automatically assigns the fields
 		$this->replies()->create($reply);
+	}
+
+	public function channel()
+	{
+		return $this->belongsTo(Channel::class);
 	}
 }

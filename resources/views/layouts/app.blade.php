@@ -28,7 +28,12 @@
                 </a>
                 <a class="navbar-brand" href="{{ url('/threads') }}">
                     All threads
-                </a>
+								</a>
+								@if(auth()->check())
+									<a class="navbar-brand" href="{{ url('/threads/create') }}">
+											Create Thread
+									</a>
+								@endif
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>

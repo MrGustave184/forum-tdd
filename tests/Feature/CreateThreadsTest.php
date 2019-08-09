@@ -10,10 +10,12 @@ class CreateThreadsTest extends TestCase
 {
 	use RefreshDatabase;
 
+	
+
 	 /** @test */
 	 public function an_authenticated_user_can_create_threads()
 	{
-			// $this->withoutExceptionHandling();
+			$this->withoutExceptionHandling();
 			
 			// Given we have an authenticated user
 			// $this->actingAs(factory('App\User')->create());
@@ -24,16 +26,29 @@ class CreateThreadsTest extends TestCase
 			//  but a raw data array instead
 			// $thread = factory('App\Thread')->raw();	
 			// $thread = factory('App\Thread')->make();	
-			$thread = make('App\Thread');	
+			$thread = create('App\Thread');	
 			// dd($thread);
 			$this->post('/threads', $thread->toArray());
 
 			// Then when we visit the threads page 
+			// dd($thread->path());
 			$this->get($thread->path())
 
 			// We should see the new thread
 				->assertSee($thread->title)
 				->assertSee($thread->body);
+	}
+
+	// Both of the following tests are doing the same job, so we can merge them together in this one single test
+
+	/** @test */
+	public function guest_users_cannot_create_threads()
+	{
+		$this->post('/threads')
+			->assertRedirect('/login');
+
+		$this->get('/threads/create')
+			->assertRedirect('/login');
 	}
 
 	/** @test */
