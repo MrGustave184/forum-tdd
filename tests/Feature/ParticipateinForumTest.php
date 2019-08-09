@@ -75,5 +75,7 @@ class ParticipateinForumTest extends TestCase
 			
 			$this->post($this->thread->path().'/replies', $reply->toArray())
 				->assertSessionHasErrors('body');
+
+				return 0;
 		}
 }
