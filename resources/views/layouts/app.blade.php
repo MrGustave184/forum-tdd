@@ -25,8 +25,15 @@
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
+								</a>								
+                <a class="navbar-brand" href="{{ url('/threads') }}">
+                    All threads
 								</a>
-
+								@if(auth()->check())
+									<a class="navbar-brand" href="{{ url('/threads/create') }}">
+											New Thread
+									</a>
+								@endif
 								{{-- Categories Dropdown --}}
 								<div class="dropdown navbar-brand">
 									<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -38,15 +45,6 @@
 										@endforeach
 									</div>
 								</div>
-								
-                <a class="navbar-brand" href="{{ url('/threads') }}">
-                    All threads
-								</a>
-								@if(auth()->check())
-									<a class="navbar-brand" href="{{ url('/threads/create') }}">
-											Create Thread
-									</a>
-								@endif
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -91,10 +89,22 @@
                     </ul>
                 </div>
             </div>
-        </nav>
-
+				</nav>
+				
+				{{-- Main Content --}}
         <main class="py-4">
-            @yield('content')
+
+					{{-- Display errors --}}
+					@if(count($errors))
+						<div class="alert alert-danger text-align-center">
+							@foreach($errors->all() as $error)
+								<li>{{ $error }}</li>
+							@endforeach
+						</div>
+					@endif
+					
+					{{-- Yield main content --}}
+          @yield('content')
         </main>
     </div>
 </body>

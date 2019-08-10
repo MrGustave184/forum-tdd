@@ -35,10 +35,12 @@
 										@if(auth()->check())
 											<div style="margin-top:25px">
 												<div><h2>Write a Reply</h2></div>
+
+												{{-- Reply Form --}}
 												<form method="POST" action="{{ $thread->path().'/replies' }}" >
 													@csrf
 													<div class="form-group">
-														<textarea name="body" id="body" class="form-control"></textarea>
+														<textarea name="body" id="body" class="form-control" rows="8"></textarea>
 													</div>
 													<button type="submit" class="btn btn-primary">Post</button>
 												</form>
