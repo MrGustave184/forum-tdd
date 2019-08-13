@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Thread;
 use App\Channel;
+use App\Filters\ThreadFilters;
 use Illuminate\Http\Request;
 
 class ThreadsController extends Controller
@@ -20,28 +21,19 @@ class ThreadsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel)
+    public function index(Channel $channel, ThreadFilters $filters)
     {	
-				/**
-				* The class not found error came because route model binding was trying to get the channel
-				*	by his id, but we are using the slug instead (in the url)
-				*/
-				// // For this approach, we pass $channelSlug = null as a parameter
-				// if($channelSlug) {
-				// 	$channel = Channel::where('slug', $channelSlug)->first();
-				// 	$threads = Thread::where('channel_id', $channel->id)->latest()->get();
-				// }
-				// else {
-				// 	$threads = Thread::latest()->get();
-				// }
+				// $threads = $this->getThreads($channel);
+				// $threads = Thread::filter($filters)->get();
 
-				// // For this approach, we use route model binding and the eloquent relationship
-				// if($channel->exists)
-				// 	$threads = $channel->threads()->latest()->get();
-				// else
-				// 	$threads = Thread::latest()->get();
-				
-				$threads = $channel->exists ? $channel->threads()->latest()->get() : Thread::latest()->get();
+				if($channel->exists) {
+					$threads = $channel->threads()->latest();
+				} else {
+					$threads = Thread::latest();
+				}
+
+				// Filter threads using a query scope method on the thread model
+				$threads = $threads->filter($filters)->get();			
 
         return view('threads.index', compact('threads'));
     }
@@ -127,5 +119,44 @@ class ThreadsController extends Controller
     public function destroy(Thread $thread)
     {
         //
-    }
+		}
+		
+		/** This is an approach for filtering threads, but as we are doing a lot of filtering, 
+		* we gonna create a dedicated filter class
+		 */
+		// protected function getThreads(Channel $channel)
+		// {
+		// 		/**
+		// 		* The class not found error came because route model binding was trying to get the channel
+		// 		*	by his id, but we are using the slug instead (in the url)
+		// 		*/
+		// 		// // For this approach, we pass $channelSlug = null as a parameter
+		// 		// if($channelSlug) {
+		// 		// 	$channel = Channel::where('slug', $channelSlug)->first();
+		// 		// 	$threads = Thread::where('channel_id', $channel->id)->latest()->get();
+		// 		// }
+		// 		// else {
+		// 		// 	$threads = Thread::latest()->get();
+		// 		// }
+
+		// 		// In this first filter, we look for the threads but do not get them yet (->get())
+		// 		if($channel->exists) {
+		// 			$threads = $channel->threads()->latest();
+		// 		} else {
+		// 			$threads = Thread::latest();
+		// 		}
+				
+		// 		// if request('by') we filter by the given username
+		// 		if($username = request('by')) {
+		// 			$user = \App\User::where('name', $username)->firstOrFail();
+
+		// 			// filter threads by user id
+		// 			$threads->where('user_id', $user->id);
+		// 		}
+
+		// 		// Get the filtered threads
+		// 		$threads = $threads->get();
+
+		// 		return $threads;
+		// }
 }

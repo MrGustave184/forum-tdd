@@ -37,4 +37,12 @@ class Thread extends Model
 	{
 		return $this->belongsTo(Channel::class);
 	}
+
+	// The scope makes that in the function call, the query object is passed automatically to the method
+	// $threads = $threads->filter($filters)->get();
+	public function scopeFilter($query, $filters)
+	{
+		// Use the apply method (ThreadFilters) to apply the filters on the currently running query
+		return $filters->apply($query);
+	}
 }

@@ -22,7 +22,9 @@
 												<label for="channel">Choose a Channel</label>
 												<select name="channel_id" id="" class="form-control" required>
 													<option value="">Select a channel...</option>
-													@foreach(App\Channel::all() as $channel)
+
+													{{-- The channels variable comes from the appServiceProvider --}}
+													@foreach($channels as $channel)
 
 													{{-- Here we check if the old channel id == the current channel id to rememeber the value in cas of an error --}}
 													<option value="{{ $channel->id }}" {{ old('channel_id') == $channel->id ? 'selected' : '' }}>{{ $channel->name }}</option>

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers;
+use App\Channel;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -24,6 +25,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(191);
+				Schema::defaultStringLength(191);
+				
+				// // Inject a variable into a view (channels in this case)
+				// \View::composer('threads.create', function($view) {
+				// 	$view->with('channels', \App\Channel::all());
+				// });
+
+				// // Share a variable across all views
+				// \View::composer('*', function($view) {
+				// 	$view->with('channels', \App\Channel::all());
+				// });
+
+				// Share a variable across all views
+				\View::share('channels', Channel::all());
     }
 }

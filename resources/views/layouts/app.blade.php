@@ -25,26 +25,42 @@
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
-								</a>								
-                <a class="navbar-brand" href="{{ url('/threads') }}">
-                    All threads
-								</a>
+								</a>	
+
+                {{-- All Threads Dropdown --}}
+								<div class="dropdown navbar-brand">
+									<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Threads
+									</a>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+										<a class="dropdown-item" href="/threads">All Threads</a>
+										
+										@if(auth()->check())
+											<a class="dropdown-item" href="/threads?by={{ auth()->user()->name }}">My Threads</a>
+										@endif
+									</div>
+								</div>
+								{{-- /All Threads Dropdown --}}
+
 								@if(auth()->check())
 									<a class="navbar-brand" href="{{ url('/threads/create') }}">
 											New Thread
 									</a>
 								@endif
+								
 								{{-- Categories Dropdown --}}
 								<div class="dropdown navbar-brand">
 									<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										Categories
 									</a>
 									<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-										@foreach(App\Channel::all() as $channel)
+										@foreach($channels as $channel)
 											<a class="dropdown-item" href="/threads/{{$channel->slug}}">{{ $channel->name }}</a>
 										@endforeach
 									</div>
 								</div>
+								{{-- /Categories Dropdown --}}
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
