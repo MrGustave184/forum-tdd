@@ -17,10 +17,19 @@
 										@if($threads)
 											@foreach($threads as $thread)
 												<article class="card">
-												<h4 class="card-header"><a href="{{ $thread->path() }}">{{ $thread->title }}</a></h4>
+													
+													<div class="level card-header">
+														<h4 class="flex"><a href="{{ $thread->path() }}">{{ $thread->title }}</a></h4>
+														<strong>
+															{{ $thread->replies_count }} {{ str_plural('reply', $thread->replies_count)}} 
+														</strong>
+													</div>
+
 													<div class="card-body">
 														{{ $thread->body }}
 													</div>
+													
+												
 												</article>
 											@endforeach
 										@endif

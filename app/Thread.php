@@ -8,6 +8,17 @@ class Thread extends Model
 {
 	protected $guarded = [];
 
+	// Add the reply count global query scope
+	protected static function boot()
+	{
+		parent::boot();
+
+		static::addGlobalScope('replyCount', function($builder) {
+			// Add the replies count query to all thread queries
+			$builder->withCount('replies');
+		});
+	}
+
 	/** Return the url path to the thread  */
 	public function path()
 	{
@@ -45,4 +56,10 @@ class Thread extends Model
 		// Use the apply method (ThreadFilters) to apply the filters on the currently running query
 		return $filters->apply($query);
 	}
+
+	// With this, we can call the reply count as a attribute. $thread->replyCount;
+	// public function getReplyCountAttribute()
+	// {
+	// 	return $this->replies()->count();
+	// }
 }

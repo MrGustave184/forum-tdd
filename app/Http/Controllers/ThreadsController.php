@@ -23,18 +23,16 @@ class ThreadsController extends Controller
      */
     public function index(Channel $channel, ThreadFilters $filters)
     {	
+				
 				// $threads = $this->getThreads($channel);
 				// $threads = Thread::filter($filters)->get();
+				$threads = $this->getThreads($channel, $filters);
 
-				if($channel->exists) {
-					$threads = $channel->threads()->latest();
-				} else {
-					$threads = Thread::latest();
+				// If the request is looking for a json response, return the $threads as json
+				if(request()->wantsJson()) {
+					return $threads;
 				}
-
-				// Filter threads using a query scope method on the thread model
-				$threads = $threads->filter($filters)->get();			
-
+		
         return view('threads.index', compact('threads'));
     }
 
@@ -84,7 +82,10 @@ class ThreadsController extends Controller
      */
     public function show($channelId, Thread $thread)
     {
-      return view('threads.show', compact('thread'));
+      return view('threads.show', [
+				'thread' => $thread,
+				'replies' => $thread->replies()->paginate(20)
+			]);
     }
 
     /**
@@ -159,4 +160,20 @@ class ThreadsController extends Controller
 
 		// 		return $threads;
 		// }
+
+		public function getThreads(Channel $channel, ThreadFilters $filters)
+		{
+				$threads = Thread::latest()->filter($filters);
+
+				if($channel->exists) {
+					$threads->where('channel_id', $channel->id);
+				}
+
+				// dd($threads->toSql());
+
+				// Filter threads using a query scope method on the thread model
+				$threads = $threads->get();	
+
+				return $threads;
+		}
 }

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row">
         <div class="col-md-8">
             <div>
                 <h1 class="jumbotron text-center">Single Thread</h1>
@@ -23,12 +23,17 @@
 													</div>
 												</article>
 										@endif
+										
 										@if($thread->replies)
-											@foreach($thread->replies as $reply)
+											@foreach($replies as $reply)
 
 											{{-- Show the reply --}}
 												@include('threads.reply')
 											@endforeach
+											<div style="margin:40px 0;">
+												{{ $replies->links() }}
+											</div>
+											
 										@endif
 
 										{{-- Check if user is logged in --}}
@@ -51,7 +56,32 @@
 										
                 </div>
             </div>
-        </div>
+				</div>
+				<div class="col-md-4">
+					<article class="card">
+						<div class="card-body">
+							{{--
+								When you call $thread->replies->count()  with replies as a property, laravel will run the sql
+								query and get all the replies and his info, so its a waste of resource. Instead we call the replies as a method to just fetch the count and not all the replies data. This we will extract 
+								to a method on the Thread model
+								 public function getReplyCountAttribute()
+								 {
+								 	return $this->replies()->count();
+								 }
+
+								 and we call it
+								 and currently has {{ $thread->replies()->count() }}
+							 --}}
+
+							{{-- 
+								We can also use a global query scope. It will automatically apply itself to all $thread queries 
+							--}}
+							This thread was published {{ $thread->created_at->diffForHumans() }}
+							by <a href="#">{{ $thread->owner->name }}</a> and currently has {{ $thread->replies_count }} 
+							{{ str_plural('comment', $thread->replies_count)}}.
+						</div>
+					</article>
+				</div>										
     </div>
 </div>
 @endsection
