@@ -17,7 +17,7 @@ class FavoritesTest extends TestCase
 	 
 		 $reply = factory('App\Reply')->create();
 
-		 $this->post('replies/' . $reply->id . '/favorites')
-		 	->assertCount(1, $reply->favorites);
+		 $this->post('replies/' . $reply->id . '/favorites');
+		 	$this->assertCount(1, $reply->favorites);
 	 }
 }
