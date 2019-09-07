@@ -71,7 +71,7 @@ class ReadThreadsTest extends TestCase
 	public function a_user_can_filter_threads_by_username()
 	{
 		$jhon = factory('App\User')->create(['name' => 'JhonDoe']);
-		$jane = factory('App\User')->create(['name' => 'JaneDoe']);
+		$jane = factory('App\User')->create();
 		
 		$this->actingAs($jhon);
 		$threadByJhon = factory('App\Thread')->create(['user_id' => auth()->id()]);
@@ -103,6 +103,6 @@ class ReadThreadsTest extends TestCase
 
 		// extract the replies count value for each thread and assert they are arranged in order
 		// by the reply count
-			$this->assertEquals([3, 2, 0], array_column($response, 'replies_count'));
+		$this->assertEquals([3, 2, 0], array_column($response, 'replies_count'));
 	}
 }
