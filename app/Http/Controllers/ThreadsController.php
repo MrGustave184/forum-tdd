@@ -163,7 +163,11 @@ class ThreadsController extends Controller
 
 		public function getThreads(Channel $channel, ThreadFilters $filters)
 		{
-				$threads = Thread::latest()->filter($filters);
+				// We gonna eager load the channels (refering to the channel relationship in the thread model) 
+				// to avoid n+1 problem caused by the path within the foreach ($this->channel->slug)
+				// This converts a lot of queries (one for each channel) to just 1 that loads all the channels
+				// and assign them using the relationship
+				$threads = Thread::with('channel')->latest()->filter($filters);
 
 				if($channel->exists) {
 					$threads->where('channel_id', $channel->id);

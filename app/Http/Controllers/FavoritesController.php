@@ -17,7 +17,7 @@ class FavoritesController extends Controller
 		{
 			// $this->withoutExceptionHandling();
 
-			// // Using the DB facade (we dont have a model yet)
+			// // Using the DB facade (dont have a model yet)
 			// return \DB::table('favorites')->insert([
 			// 	'user_id' => auth()->id(),
 			// 	'favorited_id' => $reply->id,
@@ -33,6 +33,8 @@ class FavoritesController extends Controller
 
 			// Using the eloquent polymorphic relationship
 			// For we have the relationshiop defined, favorited_id and favorited_type will be assigned automatically
-			return $reply->favorite();
+			$reply->favorite();
+
+			return back();
 		}
 }

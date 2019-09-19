@@ -38,6 +38,18 @@ class AppServiceProvider extends ServiceProvider
 				// });
 
 				// Share a variable across all views
-				\View::share('channels', Channel::all());
+				// This is caching the channels automatically????????
+				// \View::share('channels', Channel::all());
+
+				// To improve performance, we gonna cache the channels (because they dont change very often)
+				// Before injecting them in every view
+				\View::composer('*', function ($view) {
+						$channels = \Cache::rememberForever('channels', function () {
+								return Channel::all();
+						});
+
+						$view->with('channels', $channels);
+				});
+				
     }
 }

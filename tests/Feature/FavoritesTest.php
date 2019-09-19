@@ -32,6 +32,8 @@ class FavoritesTest extends TestCase
 		 
 		//  dd($reply->favorites);
 		// assertDatatabaseHas()
+
+		// assert if the collection has the reply
 		$this->assertCount(1, $reply->favorites);
 	 }
 
@@ -54,6 +56,8 @@ class FavoritesTest extends TestCase
 
 		//  dd(\App\Favorite::all()->toArray());
 		// assertDatatabaseHas()
+
+		// assert if the collection has the reply
 		$this->assertCount(1, $reply->favorites);
 	 }
 }

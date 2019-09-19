@@ -30,6 +30,7 @@ class CreateFavoritesTable extends Migration
 						$table->timestamps();
 						
 						// DB level protection against user favoriting an item more than once
+						// This combination must be unique
 						$table->unique(['user_id', 'favorited_id', 'favorited_type']);
         });
     }

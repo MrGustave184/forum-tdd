@@ -29,7 +29,8 @@ class Thread extends Model
 	/** A thread has many replies */
 	public function replies()
 	{
-		return $this->hasMany(Reply::class);
+		return $this->hasMany(Reply::class)
+			->withCount('favorites');
 	}
 
 	/** A thread belongs to a user */
